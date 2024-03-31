@@ -2,12 +2,17 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice.js'
+import OAuth from "../components/OAuth.jsx";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice.js";
 
 function signin() {
   const [formdata, setFormdata] = useState({});
-  const {loading, error: errormessage} = useSelector(state=>state.user)
-  const dispatch = useDispatch()
+  const { loading, error: errormessage } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handChange = (e) => {
@@ -16,32 +21,29 @@ function signin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !email ||
-      !password ||
-      email === "" ||
-      password == ""
-    ) {
-      return dispatch(signInFailure("Please fill out all fields"));
-    }
-    try {
-      dispatch(signInStart());
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formdata),
-      });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(signInFailure(data.message));
+    const { email, password } = formdata;
+    if (!email || !password) {
+      alert("All fields need to be filled !!!")
+    } else {
+      try {
+        dispatch(signInStart());
+        const res = await fetch("/api/auth/signin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formdata),
+        });
+        const data = await res.json();
+        if (data.success === false) {
+          dispatch(signInFailure(data.message));
+        }
+        if (res.ok) {
+          dispatch(signInSuccess(data));
+          navigate("/");
+        }
+        console.log(data);
+      } catch (error) {
+        dispatch(signInFailure(error.message));
       }
-      
-      if(res.ok){
-        dispatch(signInSuccess(data))
-        navigate('/')
-      }
-    } catch (error) {
-      dispatch(signInFailure(error.message))
     }
   };
 
@@ -91,9 +93,10 @@ function signin() {
                   <span className="pt-3"> Loading...</span>
                 </>
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span>Don't have an account ?</span>
