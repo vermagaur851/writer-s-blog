@@ -6,17 +6,18 @@ import jwt from "jsonwebtoken";
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
+  console.log(req.body);
   if (username === "" || email === "" || password == "") {
     next(errorHandler(400, "All fields are required !!"));
   }
 
-  const hashed = bcrypt.hashSync(password, 10);
 
+  const hashed = bcrypt.hashSync(password, 10);
   const newUser = new User({ username, email, password: hashed });
 
   try {
     await newUser.save();
-    res.json("Signup Successfull");
+    res.json(newUser);
   } catch (error) {
     next(error);
   }
@@ -43,11 +44,10 @@ export const signin = async (req, res, next) => {
       process.env.JWT_SECRET
     );
     const { password: pass, ...data } = validUser;
-    console.log(data);
     res
       .status(200)
       .cookie("access_token", token, { httpOnly: true })
-      .json("Sign in Successful !!!");
+      .json(data);
   } catch (error) {
     next(error);
   }
@@ -80,10 +80,9 @@ export const google = async (req, res, next) => {
         password: hashedPassword,
         profilePicture: googlePhotoUrl,
       });
-      // await newUser.save();
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-      const { password, ...rest } = user._doc;
-      console.log("Done2");
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = newUser._doc;
       res
         .status(200)
         .cookie("access_token", token, {

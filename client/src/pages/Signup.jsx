@@ -60,7 +60,7 @@ function signup() {
               <TextInput
                 type="text"
                 placeholder="username"
-                id="username "
+                id="username"
                 onChange={handChange}
               />
             </div>

@@ -37,10 +37,10 @@ function signin() {
           dispatch(signInFailure(data.message));
         }
         if (res.ok) {
-          dispatch(signInSuccess(data));
+          dispatch(signInSuccess(data._doc));
           navigate("/");
         }
-        console.log(data);
+        console.log(data._doc);
       } catch (error) {
         dispatch(signInFailure(error.message));
       }
