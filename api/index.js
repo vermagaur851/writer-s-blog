@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 import userRoutes from './routes/user.routes.js'
 import authRoutes from './routes/auth.routes.js'
 import {DB_NAME} from './constant.js'
+import cookieParser from 'cookie-parser'
+
 
 dotenv.config()
 mongoose.connect(`mongodb+srv://vermagaurav851:${process.env.DB_PASSWORD}@cluster0.mwrr8de.mongodb.net/${DB_NAME}`)
@@ -20,7 +22,9 @@ app.listen(process.env.PORT, () => {
     console.log(`Server listening at ${process.env.PORT}`);
 })
 
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
+
 app.use('/api/user',userRoutes)
 app.use('/api/auth',authRoutes)
 

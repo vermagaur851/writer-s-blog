@@ -1,12 +1,11 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.model.js";
-import { errorHandler } from "../utils/errorHandler.js";
+import errorHandler from "../utils/errorHandler.js";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
 
-  console.log(req.body);
   if (username === "" || email === "" || password == "") {
     next(errorHandler(400, "All fields are required !!"));
   }
@@ -16,8 +15,9 @@ export const signup = async (req, res, next) => {
   const newUser = new User({ username, email, password: hashed });
 
   try {
+    const {password:pass, ...data} = newUser._doc
     await newUser.save();
-    res.json(newUser);
+    res.json(data);
   } catch (error) {
     next(error);
   }
@@ -43,11 +43,13 @@ export const signin = async (req, res, next) => {
       },
       process.env.JWT_SECRET
     );
-    const { password: pass, ...data } = validUser;
+    const { password: pass, ...data } = validUser._doc;
+    console.log(token);
     res
       .status(200)
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie('access_token',token,{httpOnly:true})
       .json(data);
+      
   } catch (error) {
     next(error);
   }

@@ -18,6 +18,8 @@ function Header() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+  console.log(currentUser);
+
   return (
     <Navbar>
       <Link
@@ -48,7 +50,11 @@ function Header() {
         >
           {theme === "dark" ? <FaSun /> : <FaMoon />}
         </Button>
-        {currentUser ? (
+        {currentUser.currentUser === null ? (
+          <Link to="/sign-in">
+            <Button gradientDuoTone={"purpleToBlue"}>Sign In</Button>
+          </Link>
+        ) : (
           <Dropdown
             arrowIcon={false}
             inline
@@ -70,10 +76,6 @@ function Header() {
             <Dropdown.Divider />
             <Dropdown.Item>Log Out</Dropdown.Item>
           </Dropdown>
-        ) : (
-          <Link to="/sign-in">
-            <Button gradientDuoTone={"purpleToBlue"}>Sign In</Button>
-          </Link>
         )}
 
         <Navbar.Toggle></Navbar.Toggle>

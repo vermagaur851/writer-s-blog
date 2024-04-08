@@ -1,5 +1,5 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth.jsx";
@@ -37,10 +37,10 @@ function signin() {
           dispatch(signInFailure(data.message));
         }
         if (res.ok) {
-          dispatch(signInSuccess(data._doc));
+          console.log(data);
+          dispatch(signInSuccess(data));
           navigate("/");
         }
-        console.log(data._doc);
       } catch (error) {
         dispatch(signInFailure(error.message));
       }

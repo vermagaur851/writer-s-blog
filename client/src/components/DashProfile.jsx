@@ -17,6 +17,7 @@ function DashProfile() {
   const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
+  const [formdata, setFormdata] = useState();
   const filePickerRef = useRef();
 
   const handleImageChange = (e) => {
@@ -48,7 +49,7 @@ function DashProfile() {
       },
       (error) => {
         setImageFileUploadError(
-          "Could not upload Image (file must be less than 100 MB)"
+          "Could not upload Image (file must be less than 2 MB)"
         );
         setImageFileUploadProgress(null)
         setImageFile(null)
@@ -62,10 +63,26 @@ function DashProfile() {
     );
   };
 
+  const handlechange = (e) => {
+    setFormdata({ ...formdata, [e.target.id]: e.target.value })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(object.keys(formdata).length === 0 ){
+      return;
+    }
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit} >
         <input
           type="file"
           accept="image/*"
@@ -109,14 +126,16 @@ function DashProfile() {
           id="username"
           placeholder="username"
           defaultValue={currentUser.username}
+          onClick={handlechange}
         />
         <TextInput
           type="text"
           id="email"
           placeholder="email"
           defaultValue={currentUser.email}
+          onClick={handlechange}
         />
-        <TextInput type="text" id="password" placeholder="password" />
+        <TextInput type="text" id="password" placeholder="password" onClick={handlechange}/>
         <Button type="submit" gradientDuoTone={"purpleToBlue"} outline>
           Update
         </Button>
